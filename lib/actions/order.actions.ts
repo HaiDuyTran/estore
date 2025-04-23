@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect';
 import { convertToPlainObject, formatError } from '../utils';
 import { auth } from '@/auth';
 import { getMyCart } from './cart.actions';
@@ -11,7 +10,7 @@ import { CartItem, PaymentResult, ShippingAddress } from '@/types';
 import { paypal } from '../paypal';
 import { revalidatePath } from 'next/cache';
 import { PAGE_SIZE } from '../constants';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@/prisma/app/generated/prisma/client';
 import { sendPurchaseReceipt } from '@/email';
 
 // Create order and create the order items
@@ -98,7 +97,7 @@ export async function createOrder() {
       redirectTo: `/order/${insertedOrderId}`,
     };
   } catch (error) {
-    if (isRedirectError(error)) throw error;
+    // if (isRedirectError(error)) throw error;
     return { success: false, message: formatError(error) };
   }
 }

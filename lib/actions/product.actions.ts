@@ -5,7 +5,7 @@ import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from '../constants';
 import { revalidatePath } from 'next/cache';
 import { insertProductSchema, updateProductSchema } from '../validators';
 import { z } from 'zod';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@/prisma/app/generated/prisma/client';
 
 // Get latest products
 export async function getLatestProducts() {

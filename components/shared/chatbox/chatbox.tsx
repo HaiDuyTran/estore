@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { MessageCircleMoreIcon, XIcon, SendHorizonalIcon } from 'lucide-react';
+import Link from 'next/link';
 import {
   useState,
   useRef,
@@ -32,18 +33,7 @@ export function ChatBox() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [messages, setMessages] = useState([
     // Example messages state with Markdown
-    { id: 1, text: 'Hi there!', sender: 'other' },
-    { id: 2, text: 'Hello! How can I **help** you *today*?', sender: 'me' },
-    {
-      id: 3,
-      text: 'I have a question about my order.\nMy order number is `ORD-12345`.',
-      sender: 'other',
-    },
-    {
-      id: 4,
-      text: 'Sure, I can look that up. What is the question?\n\nHere are some common topics:\n*   Tracking\n*   Returns\n*   Billing\n\nVisit our [Help Center](https://example.com) for more.',
-      sender: 'me',
-    },
+    { id: 1, text: 'How can i help you ?', sender: 'other' },
   ]);
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -189,9 +179,14 @@ export function ChatBox() {
                     components={{
                       // Use _node to indicate the variable is intentionally unused
                       a: ({ _node, ...props }: AnchorProps) => (
-                        <a
+                        <Link
+                          className=' text-xl font-bold underline text-blue-400'
+                          href={
+                            props.href ||
+                            '/product/calvin-klein-slim-fit-stretch-shirt'
+                          }
                           {...props}
-                          target='_blank'
+                          target='_self'
                           rel='noopener noreferrer'
                           // You can keep specific styling here or rely on prose-a: styles above
                           // className="underline hover:text-blue-500"

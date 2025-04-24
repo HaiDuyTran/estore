@@ -165,6 +165,7 @@ ${JSON.stringify(productsToProcess, null, 2)}
         *   Replace \`Product Name\` with the actual 'name' from the product data.
         *   Replace \`image_url\` with the *first* URL string found in the product's 'images' array.
         *   Replace \`{slug}\` with the actual 'slug' value from the product data.
+        *   Style product properties with markdown if needed
     *   **If the product has NO images (the 'images' array is empty or missing):** Provide only a standard text link using the Markdown format: \`[Product Name](/product/{slug})\`. Replace \`Product Name\` and \`{slug}\` as described above.
     *   Use this format consistently whenever referring to a product in your response. Ensure the generated markdown is valid.
 

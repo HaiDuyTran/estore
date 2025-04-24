@@ -4,7 +4,7 @@ import { APP_NAME } from '@/lib/constants';
 import Menu from './menu';
 import CategoryDrawer from './category-drawer';
 import Search from './search';
-
+import LOGO_STORE from '../../../public/images/logo_store.svg';
 const Header = () => {
   return (
     <header className='w-full border-b'>
@@ -13,10 +13,12 @@ const Header = () => {
           <CategoryDrawer />
           <Link href='/' className='flex-start ml-4'>
             <Image
-              src='/images/logo.svg'
-              alt={`${APP_NAME} logo`}
-              height={48}
-              width={48}
+              className='text-green-500'
+              color='green'
+              src={LOGO_STORE}
+              alt={`${APP_NAME} logo` || 'logo'}
+              height={50}
+              width={50}
               priority={true}
             />
             <span className='hidden lg:block font-bold text-2xl ml-3'>

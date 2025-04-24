@@ -1811,6 +1811,7 @@ export namespace Prisma {
     isFeatured: number
     banner: number
     createdAt: number
+    embedding: number
     _all: number
   }
 
@@ -1876,6 +1877,7 @@ export namespace Prisma {
     isFeatured?: true
     banner?: true
     createdAt?: true
+    embedding?: true
     _all?: true
   }
 
@@ -1980,6 +1982,7 @@ export namespace Prisma {
     isFeatured: boolean
     banner: string | null
     createdAt: Date
+    embedding: JsonValue | null
     _count: ProductCountAggregateOutputType | null
     _avg: ProductAvgAggregateOutputType | null
     _sum: ProductSumAggregateOutputType | null
@@ -2016,6 +2019,7 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: boolean
     createdAt?: boolean
+    embedding?: boolean
     OrderItem?: boolean | Product$OrderItemArgs<ExtArgs>
     Review?: boolean | Product$ReviewArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
@@ -2036,6 +2040,7 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: boolean
     createdAt?: boolean
+    embedding?: boolean
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2053,6 +2058,7 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: boolean
     createdAt?: boolean
+    embedding?: boolean
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectScalar = {
@@ -2070,9 +2076,10 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: boolean
     createdAt?: boolean
+    embedding?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "category" | "images" | "brand" | "description" | "stock" | "price" | "rating" | "numReviews" | "isFeatured" | "banner" | "createdAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "category" | "images" | "brand" | "description" | "stock" | "price" | "rating" | "numReviews" | "isFeatured" | "banner" | "createdAt" | "embedding", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     OrderItem?: boolean | Product$OrderItemArgs<ExtArgs>
     Review?: boolean | Product$ReviewArgs<ExtArgs>
@@ -2102,6 +2109,7 @@ export namespace Prisma {
       isFeatured: boolean
       banner: string | null
       createdAt: Date
+      embedding: Prisma.JsonValue | null
     }, ExtArgs["result"]["product"]>
     composites: {}
   }
@@ -2541,6 +2549,7 @@ export namespace Prisma {
     readonly isFeatured: FieldRef<"Product", 'Boolean'>
     readonly banner: FieldRef<"Product", 'String'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
+    readonly embedding: FieldRef<"Product", 'Json'>
   }
     
 
@@ -12185,7 +12194,8 @@ export namespace Prisma {
     numReviews: 'numReviews',
     isFeatured: 'isFeatured',
     banner: 'banner',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    embedding: 'embedding'
   };
 
   export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
@@ -12340,14 +12350,6 @@ export namespace Prisma {
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-  export const NullsOrder: {
-    first: 'first',
-    last: 'last'
-  };
-
-  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
   export const JsonNullValueFilter: {
     DbNull: typeof DbNull,
     JsonNull: typeof JsonNull,
@@ -12355,6 +12357,14 @@ export namespace Prisma {
   };
 
   export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -12481,6 +12491,7 @@ export namespace Prisma {
     isFeatured?: BoolFilter<"Product"> | boolean
     banner?: StringNullableFilter<"Product"> | string | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
+    embedding?: JsonNullableFilter<"Product">
     OrderItem?: OrderItemListRelationFilter
     Review?: ReviewListRelationFilter
   }
@@ -12500,6 +12511,7 @@ export namespace Prisma {
     isFeatured?: SortOrder
     banner?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    embedding?: SortOrderInput | SortOrder
     OrderItem?: OrderItemOrderByRelationAggregateInput
     Review?: ReviewOrderByRelationAggregateInput
   }
@@ -12522,6 +12534,7 @@ export namespace Prisma {
     isFeatured?: BoolFilter<"Product"> | boolean
     banner?: StringNullableFilter<"Product"> | string | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
+    embedding?: JsonNullableFilter<"Product">
     OrderItem?: OrderItemListRelationFilter
     Review?: ReviewListRelationFilter
   }, "id" | "slug">
@@ -12541,6 +12554,7 @@ export namespace Prisma {
     isFeatured?: SortOrder
     banner?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    embedding?: SortOrderInput | SortOrder
     _count?: ProductCountOrderByAggregateInput
     _avg?: ProductAvgOrderByAggregateInput
     _max?: ProductMaxOrderByAggregateInput
@@ -12566,6 +12580,7 @@ export namespace Prisma {
     isFeatured?: BoolWithAggregatesFilter<"Product"> | boolean
     banner?: StringNullableWithAggregatesFilter<"Product"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
+    embedding?: JsonNullableWithAggregatesFilter<"Product">
   }
 
   export type UserWhereInput = {
@@ -13204,6 +13219,7 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: string | null
     createdAt?: Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     OrderItem?: OrderItemCreateNestedManyWithoutProductInput
     Review?: ReviewCreateNestedManyWithoutProductInput
   }
@@ -13223,6 +13239,7 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: string | null
     createdAt?: Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     OrderItem?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     Review?: ReviewUncheckedCreateNestedManyWithoutProductInput
   }
@@ -13242,6 +13259,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     OrderItem?: OrderItemUpdateManyWithoutProductNestedInput
     Review?: ReviewUpdateManyWithoutProductNestedInput
   }
@@ -13261,6 +13279,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     OrderItem?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     Review?: ReviewUncheckedUpdateManyWithoutProductNestedInput
   }
@@ -13280,6 +13299,7 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: string | null
     createdAt?: Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type ProductUpdateManyMutationInput = {
@@ -13297,6 +13317,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type ProductUncheckedUpdateManyInput = {
@@ -13314,6 +13335,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type UserCreateInput = {
@@ -14077,6 +14099,29 @@ export namespace Prisma {
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type OrderItemListRelationFilter = {
     every?: OrderItemWhereInput
@@ -14118,6 +14163,7 @@ export namespace Prisma {
     isFeatured?: SortOrder
     banner?: SortOrder
     createdAt?: SortOrder
+    embedding?: SortOrder
   }
 
   export type ProductAvgOrderByAggregateInput = {
@@ -14270,25 +14316,14 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-  export type JsonNullableFilter<$PrismaModel = never> =
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
       >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
     equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
     path?: string[]
     mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
@@ -14303,6 +14338,20 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type AccountListRelationFilter = {
@@ -14397,32 +14446,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -15577,6 +15600,29 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
@@ -15601,29 +15647,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -16583,6 +16606,7 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: string | null
     createdAt?: Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     Review?: ReviewCreateNestedManyWithoutProductInput
   }
 
@@ -16601,6 +16625,7 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: string | null
     createdAt?: Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     Review?: ReviewUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -16680,6 +16705,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     Review?: ReviewUpdateManyWithoutProductNestedInput
   }
 
@@ -16698,6 +16724,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     Review?: ReviewUncheckedUpdateManyWithoutProductNestedInput
   }
 
@@ -16716,6 +16743,7 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: string | null
     createdAt?: Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     OrderItem?: OrderItemCreateNestedManyWithoutProductInput
   }
 
@@ -16734,6 +16762,7 @@ export namespace Prisma {
     isFeatured?: boolean
     banner?: string | null
     createdAt?: Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     OrderItem?: OrderItemUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -16809,6 +16838,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     OrderItem?: OrderItemUpdateManyWithoutProductNestedInput
   }
 
@@ -16827,6 +16857,7 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    embedding?: NullableJsonNullValueInput | InputJsonValue
     OrderItem?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
   }
 

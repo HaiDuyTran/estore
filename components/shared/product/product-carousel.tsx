@@ -33,8 +33,8 @@ const ProductCarousel = ({ data }: { data: Product[] }) => {
             <Link href={`/product/${product.slug}`}>
               <div className='relative mx-auto'>
                 <Image
-                  src={product.banner!}
-                  alt={product.name}
+                  src={product.banner || '/'}
+                  alt={product.name || 'logo'}
                   height='0'
                   width='0'
                   sizes='100vw'

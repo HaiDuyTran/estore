@@ -1,16 +1,18 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import ProductPrice from './product-price';
 import { Product } from '@/types';
 import Rating from './rating';
+import ImageWithFallback from '@/components/image-with-fallback';
 
 const ProductCard = ({ product }: { product: Product }) => {
   return (
-    <Card className='w-full max-w-sm'>
+    <Card className='w-full max-w-sm '>
       <CardHeader className='p-0 items-center'>
         <Link href={`/product/${product.slug}`}>
-          <Image
+          <ImageWithFallback
+            className='h-60 object-contain'
+            fallbackSrc='/images/404_image.avif'
             src={product.images[0]}
             alt={product.name}
             height={300}

@@ -131,7 +131,8 @@ exports.Prisma.ProductScalarFieldEnum = {
   numReviews: 'numReviews',
   isFeatured: 'isFeatured',
   banner: 'banner',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  embedding: 'embedding'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -247,15 +248,15 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
-};
-
 exports.Prisma.JsonNullValueFilter = {
   DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
 };
 
 

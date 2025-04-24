@@ -178,7 +178,7 @@ export function ChatBox() {
                   <ReactMarkdown
                     components={{
                       // Use _node to indicate the variable is intentionally unused
-                      a: ({ _node, ...props }: AnchorProps) => (
+                      a: ({ ...props }: AnchorProps) => (
                         <Link
                           className=' text-xl font-bold underline text-blue-400'
                           href={
@@ -193,7 +193,7 @@ export function ChatBox() {
                           // Important: prose-a:text-... above will likely override this unless you use !important or more specific selectors
                         />
                       ),
-                      p: ({ _node, ...props }: ParagraphProps) => (
+                      p: ({ ...props }: ParagraphProps) => (
                         // Keep specific paragraph styling if needed
                         <p {...props} className='mb-2 last:mb-0' />
                       ),

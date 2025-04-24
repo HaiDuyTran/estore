@@ -9,12 +9,15 @@ import {
   paymentResultSchema,
   insertReviewSchema,
 } from '@/lib/validators';
+import { Prisma } from "@/prisma/app/generated/prisma/client";
 
 export type Product = z.infer<typeof insertProductSchema> & {
   id: string;
   rating: string;
   numReviews: number;
   createdAt: Date;
+  embedding: Prisma.JsonValue | null; // Maps from Json?. Prisma.JsonValue is Prisma's type for JSON fields
+
 };
 
 export type Cart = z.infer<typeof insertCartSchema>;
@@ -24,9 +27,9 @@ export type OrderItem = z.infer<typeof insertOrderItemSchema>;
 export type Order = z.infer<typeof insertOrderSchema> & {
   id: string;
   createdAt: Date;
-  isPaid: Boolean;
+  isPaid: boolean;
   paidAt: Date | null;
-  isDelivered: Boolean;
+  isDelivered: boolean;
   deliveredAt: Date | null;
   orderitems: OrderItem[];
   user: { name: string; email: string };
@@ -38,3 +41,6 @@ export type Review = z.infer<typeof insertReviewSchema> & {
   createdAt: Date;
   user?: { name: string };
 };
+
+
+

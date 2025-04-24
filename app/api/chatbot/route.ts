@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/db/prisma';
+import { Product } from '@/types';
 
 // --- Interfaces (Type Definitions) ---
 
@@ -61,7 +62,8 @@ export async function POST(request: Request) {
   // Consider caching or alternative strategies if performance becomes an issue.
   const BATCH_SIZE = 50; // Limit the amount of data injected into the prompt
   const skip = 0;       // Or implement pagination if needed later
-  let productsToProcess = [];
+  
+  let productsToProcess : Product[] = [];
   try {
     productsToProcess = await prisma.product.findMany({
       take: BATCH_SIZE,
@@ -81,6 +83,7 @@ export async function POST(request: Request) {
         rating: true,
         numReviews: true,
         isFeatured: true,
+        embedding:true,
       },
     });
     console.log(`Fetched ${productsToProcess.length} products for context.`);
@@ -211,7 +214,8 @@ ${JSON.stringify(productsToProcess, null, 2)}
       let errorDetails: GeminiErrorResponse | { error: string } = { error: 'Unknown Gemini API error' };
       try {
         errorDetails = await geminiRes.json();
-      } catch (parseError) {
+      } catch (error) {
+        console.log(error);
         // Avoid logging the potentially huge request body in the error response here
         errorDetails = { error: `Gemini API Error: ${geminiRes.status} ${geminiRes.statusText}. Failed to parse error response body.` };
       }

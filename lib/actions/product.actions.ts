@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { insertProductSchema, updateProductSchema } from '../validators';
 import { z } from 'zod';
 import { Prisma } from '@/prisma/app/generated/prisma/client';
+import { Product } from '@/types';
 
 // Get latest products
 export async function getLatestProducts() {
@@ -46,27 +47,30 @@ export async function getAllProducts({
 }: {
   query: string;
   limit?: number;
-  page: number;
+  page: number; // Ensure page is treated as a number
   category?: string;
   price?: string;
   rating?: string;
   sort?: string;
-}) {
-  // Query filter
+}): Promise<{ // Define the return type for clarity
+  data: Product[]; // Replace 'any' with your actual Product type if possible
+  totalPages: number;
+  currentPage: number;
+}> {
+  // --- Build the WHERE clause ---
   const queryFilter: Prisma.ProductWhereInput =
     query && query !== 'all'
       ? {
           name: {
             contains: query,
             mode: 'insensitive',
-          } as Prisma.StringFilter,
+          } as Prisma.StringFilter, // Keep type assertion if needed
         }
       : {};
 
-  // Category filter
-  const categoryFilter = category && category !== 'all' ? { category } : {};
+  const categoryFilter: Prisma.ProductWhereInput =
+    category && category !== 'all' ? { category } : {};
 
-  // Price filter
   const priceFilter: Prisma.ProductWhereInput =
     price && price !== 'all'
       ? {
@@ -77,8 +81,7 @@ export async function getAllProducts({
         }
       : {};
 
-  // Rating filter
-  const ratingFilter =
+  const ratingFilter: Prisma.ProductWhereInput =
     rating && rating !== 'all'
       ? {
           rating: {
@@ -87,30 +90,45 @@ export async function getAllProducts({
         }
       : {};
 
-  const data = await prisma.product.findMany({
-    where: {
-      ...queryFilter,
-      ...categoryFilter,
-      ...priceFilter,
-      ...ratingFilter,
-    },
-    orderBy:
-      sort === 'lowest'
-        ? { price: 'asc' }
-        : sort === 'highest'
-        ? { price: 'desc' }
-        : sort === 'rating'
-        ? { rating: 'desc' }
-        : { createdAt: 'desc' },
-    skip: (page - 1) * limit,
-    take: limit,
-  });
+  // Combine filters into a single 'where' object
+  const where: Prisma.ProductWhereInput = {
+    ...queryFilter,
+    ...categoryFilter,
+    ...priceFilter,
+    ...ratingFilter,
+  };
 
-  const dataCount = await prisma.product.count();
+  // --- Build the ORDER BY clause ---
+  const orderBy: Prisma.ProductOrderByWithRelationInput =
+    sort === 'lowest'
+      ? { price: 'asc' }
+      : sort === 'highest'
+      ? { price: 'desc' }
+      : sort === 'rating'
+      ? { rating: 'desc' }
+      : { createdAt: 'desc' }; // Default to newest
+
+  // --- Perform COUNT and FIND MANY with the SAME 'where' clause ---
+  // Use Promise.all for potentially better performance (optional)
+  const [dataCount, data] = await Promise.all([
+    prisma.product.count({
+      where, // <<< Use the combined 'where' clause for count
+    }),
+    prisma.product.findMany({
+      where, // <<< Use the same combined 'where' clause for findMany
+      orderBy,
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+  ]);
+
+  // --- Calculate totalPages based on the FILTERED count ---
+  const totalPages = Math.ceil(dataCount / limit);
 
   return {
-    data,
-    totalPages: Math.ceil(dataCount / limit),
+    data: convertToPlainObject(data), // Apply conversion here
+    totalPages,
+    currentPage: page, // Return the current page number
   };
 }
 
@@ -181,12 +199,19 @@ export async function updateProduct(data: z.infer<typeof updateProductSchema>) {
 
 // Get all categories
 export async function getAllCategories() {
-  const data = await prisma.product.groupBy({
+  const categories = await prisma.product.groupBy({
     by: ['category'],
-    _count: true,
+    _count: {
+      category: true,
+    },
+    orderBy: {
+      _count: {
+        category: 'desc', // Optional: order by popularity
+      },
+    },
   });
-
-  return data;
+  // Map to simpler structure if needed
+  return categories.map(c => ({ category: c.category }));
 }
 
 // Get featured products

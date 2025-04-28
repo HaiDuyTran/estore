@@ -60,7 +60,7 @@ export async function POST(request: Request) {
   // --- 2. Fetch Product Data (Consider Efficiency) ---
   // Note: Fetching data on *every* chat request might be inefficient for large catalogs.
   // Consider caching or alternative strategies if performance becomes an issue.
-  const BATCH_SIZE = 50; // Limit the amount of data injected into the prompt
+  const BATCH_SIZE = 200; // Limit the amount of data injected into the prompt
   const skip = 0;       // Or implement pagination if needed later
   
   let productsToProcess : Product[] = [];

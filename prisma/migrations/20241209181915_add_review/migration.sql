@@ -3,9 +3,9 @@ CREATE TABLE "Review" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "userId" UUID NOT NULL,
     "productId" UUID NOT NULL,
-    "rating" INTEGER NOT NULL,
+    rating INTEGER NOT NULL,
     "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    description TEXT NOT NULL,
     "isVerifiedPurchase" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

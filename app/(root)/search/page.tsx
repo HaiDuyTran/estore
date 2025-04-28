@@ -5,7 +5,16 @@ import {
   getAllCategories,
 } from '@/lib/actions/product.actions';
 import Link from 'next/link';
-
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { cn } from '@/lib/utils';
 const prices = [
   {
     name: '$1 to $50',
@@ -113,7 +122,16 @@ const SearchPage = async (props: {
     return `/search?${new URLSearchParams(params).toString()}`;
   };
 
-  const products = await getAllProducts({
+  // const products = await getAllProducts({
+  //   query: q,
+  //   category,
+  //   price,
+  //   rating,
+  //   sort,
+  //   page: Number(page),
+  // });
+
+  const { totalPages, data, currentPage } = await getAllProducts({
     query: q,
     category,
     price,
@@ -121,6 +139,9 @@ const SearchPage = async (props: {
     sort,
     page: Number(page),
   });
+  const hrefBuilder = (page: number) => {
+    return `/search?q=all&category=all&price=all&rating=all&sort=newest&page=${page}`;
+  };
 
   const categories = await getAllCategories();
 
@@ -233,11 +254,79 @@ const SearchPage = async (props: {
           </div>
         </div>
         <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-          {products.data.length === 0 && <div>No products found</div>}
-          {products.data.map((product) => (
+          {data.length === 0 && <div>No products found</div>}
+          {data.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
+        <Pagination className='flex flex-row justify-end items-end pt-5'>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href={
+                  currentPage <= 1 ? '#' : hrefBuilder(Number(currentPage) - 1)
+                } // Optionally prevent setting a real href when disabled
+                aria-disabled={currentPage <= 1} // Important for accessibility
+                tabIndex={currentPage <= 1 ? -1 : undefined} // Remove from tab order when disabled
+                className={cn(
+                  // Apply default styles if needed (PaginationNext might already have base styles)
+                  // 'default-pagination-next-styles', // Example placeholder
+                  currentPage <= 1 &&
+                    'pointer-events-none opacity-50 cursor-not-allowed' // Disable interaction and visually dim
+                )}
+              />
+            </PaginationItem>
+            {Number(currentPage) > 2 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+
+            {Number(currentPage) > 1 && (
+              <PaginationItem>
+                <PaginationLink href={hrefBuilder(Number(currentPage) - 1)}>
+                  {Number(currentPage) - 1}
+                </PaginationLink>
+              </PaginationItem>
+            )}
+
+            <PaginationItem>
+              <PaginationLink href={hrefBuilder(Number(currentPage))} isActive>
+                {currentPage}
+              </PaginationLink>
+            </PaginationItem>
+            {Number(currentPage) <= totalPages - 1 && (
+              <PaginationItem>
+                <PaginationLink href={hrefBuilder(Number(currentPage) + 1)}>
+                  {Number(currentPage) + 1}
+                </PaginationLink>
+              </PaginationItem>
+            )}
+            {Number(currentPage) <= totalPages - 2 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+
+            <PaginationItem>
+              <PaginationNext
+                href={
+                  currentPage >= totalPages
+                    ? '#'
+                    : hrefBuilder(Number(currentPage) + 1)
+                } // Optionally prevent setting a real href when disabled
+                aria-disabled={currentPage >= totalPages} // Important for accessibility
+                tabIndex={currentPage >= totalPages ? -1 : undefined} // Remove from tab order when disabled
+                className={cn(
+                  // Apply default styles if needed (PaginationNext might already have base styles)
+                  // 'default-pagination-next-styles', // Example placeholder
+                  currentPage >= totalPages &&
+                    'pointer-events-none opacity-50 cursor-not-allowed' // Disable interaction and visually dim
+                )}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );

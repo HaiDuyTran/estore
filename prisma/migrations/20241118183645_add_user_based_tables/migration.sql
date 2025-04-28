@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "name" TEXT NOT NULL DEFAULT 'NO_NAME',
+    name TEXT NOT NULL DEFAULT 'NO_NAME',
     "email" TEXT NOT NULL,
     "emailVerified" TIMESTAMP(6),
     "image" TEXT,

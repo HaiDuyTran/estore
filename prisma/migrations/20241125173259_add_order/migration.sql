@@ -23,9 +23,9 @@ CREATE TABLE "OrderItem" (
     "orderId" UUID NOT NULL,
     "productId" UUID NOT NULL,
     "qty" INTEGER NOT NULL,
-    "price" DECIMAL(12,2) NOT NULL,
-    "name" TEXT NOT NULL,
-    "slug" TEXT NOT NULL,
+    price DECIMAL(12,2) NOT NULL,
+    name TEXT NOT NULL,
+    slug TEXT NOT NULL,
     "image" TEXT NOT NULL,
 
     CONSTRAINT "orderitems_orderId_productId_pk" PRIMARY KEY ("orderId","productId")

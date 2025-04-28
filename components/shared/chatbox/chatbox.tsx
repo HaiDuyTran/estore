@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -18,10 +19,29 @@ import {
   ClassAttributes,
   HTMLAttributes,
   AnchorHTMLAttributes,
-} from 'react'; // Import necessary types
-import ReactMarkdown, { ExtraProps } from 'react-markdown'; // Import ExtraProps if needed for components type safety
+  ImgHTMLAttributes,
+} from 'react';
+import ReactMarkdown, { ExtraProps } from 'react-markdown';
+// --- Types ---
+// Interface for Gemini conversation turns (matches backend)
+interface GeminiContent {
+  parts: { text: string }[];
+  role: 'user' | 'model';
+}
 
-// Define types for custom components props for clarity, though often inferred
+// Interface for the API response structure from your /api/chat endpoint
+interface ChatApiResponse {
+  reply: string; // The plain text reply
+  responseContent: GeminiContent; // The full Gemini content object for history
+}
+
+// Interface for API error response
+interface ChatApiErrorResponse {
+  error: string;
+  details?: string; // Optional details
+}
+
+// Define types for custom components props
 type AnchorProps = ClassAttributes<HTMLAnchorElement> &
   AnchorHTMLAttributes<HTMLAnchorElement> &
   ExtraProps;
@@ -29,101 +49,131 @@ type ParagraphProps = ClassAttributes<HTMLParagraphElement> &
   HTMLAttributes<HTMLParagraphElement> &
   ExtraProps;
 
+type ImageProps = ClassAttributes<HTMLImageElement> &
+  ImgHTMLAttributes<HTMLImageElement> & // Use correct attribute type
+  ExtraProps;
+
 export function ChatBox() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [messages, setMessages] = useState([
-    // Example messages state with Markdown
-    { id: 1, text: 'How can i help you ?', sender: 'other' },
+  // --- State Change: Use GeminiContent for messages ---
+  const [messages, setMessages] = useState<GeminiContent[]>([
+    // Initial message from the assistant
+    { role: 'model', parts: [{ text: 'Hello! How can I help you today?' }] },
   ]);
   const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Added loading state
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const toggleChat = () => setIsOpen(!isOpen);
 
+  // Scroll to bottom effect
   useEffect(() => {
     if (isOpen && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen]); // Trigger effect when messages change
 
   const handleSendMessage = async () => {
-    if (inputValue.trim()) {
-      const userMessageText = inputValue;
-      const newUserMessage = {
-        id: Date.now(),
-        text: userMessageText,
-        sender: 'me',
-      };
+    const userMessageText = inputValue.trim();
+    if (!userMessageText || isLoading) return; // Prevent sending empty or during load
 
-      setMessages((prevMessages) => [...prevMessages, newUserMessage]);
-      setInputValue('');
+    setIsLoading(true); // Set loading state
 
-      const typingIndicatorId = Date.now() + 1;
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { id: typingIndicatorId, text: '...', sender: 'other' },
-      ]);
+    // --- History Integration: Format user message ---
+    const userMessageContent: GeminiContent = {
+      role: 'user',
+      parts: [{ text: userMessageText }],
+    };
 
-      try {
-        const response = await fetch('/api/chatbot', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message: userMessageText }),
-        });
+    // --- History Integration: Prepare history to send ---
+    // Send the state *before* adding the new user message
+    const historyToSend = [...messages];
 
-        setMessages((prevMessages) =>
-          prevMessages.filter((msg) => msg.id !== typingIndicatorId)
-        );
+    // --- Optimistic UI Update ---
+    // Add the user's message immediately to the UI
+    setMessages((prevMessages) => [...prevMessages, userMessageContent]);
+    setInputValue(''); // Clear input after adding message
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error('API Error:', errorData.error);
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              id: Date.now() + 2,
-              text: `Error: ${errorData.error || 'Failed to get reply.'}`,
-              sender: 'other',
-            },
-          ]);
-          return;
+    try {
+      const response = await fetch('/api/chatbot', {
+        // Ensure this matches your API route file name (e.g., /api/chat/route.ts)
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // --- History Integration: Send message and history ---
+        body: JSON.stringify({
+          message: userMessageText, // The new message text
+          history: historyToSend, // The conversation history up to this point
+        }),
+      });
+
+      if (!response.ok) {
+        let errorData: ChatApiErrorResponse = { error: 'Unknown API error' };
+        try {
+          errorData = await response.json();
+        } catch {
+          // Handle cases where the error response isn't valid JSON
+          errorData = {
+            error: `API Error: ${response.status} ${response.statusText}`,
+          };
         }
+        console.error('API Error:', errorData);
 
-        const data = await response.json();
-
-        if (data.reply) {
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { id: Date.now() + 3, text: data.reply, sender: 'other' },
-          ]);
-        } else {
-          console.error('API response missing reply:', data);
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              id: Date.now() + 4,
-              text: 'Received an empty reply.',
-              sender: 'other',
-            },
-          ]);
-        }
-      } catch (error) {
-        setMessages((prevMessages) =>
-          prevMessages.filter((msg) => msg.id !== typingIndicatorId)
-        );
-
-        console.error('Failed to fetch chat response:', error);
+        // Add an error message to the chat
         setMessages((prevMessages) => [
           ...prevMessages,
           {
-            id: Date.now() + 5,
-            text: 'Error contacting the chat service.',
-            sender: 'other',
+            role: 'model', // Use 'model' role for system/error messages
+            parts: [
+              { text: `Sorry, I encountered an error: ${errorData.error}` },
+            ],
+          },
+        ]);
+        // --- Optional: Remove optimistic user message on error ---
+        // setMessages(prev => prev.slice(0, -1)); // Uncomment to remove user message if API fails
+        return; // Stop processing on error
+      }
+
+      const data: ChatApiResponse = await response.json();
+
+      // --- History Integration: Use responseContent ---
+      if (data.responseContent && data.responseContent.role === 'model') {
+        // Add the valid model response to the messages state
+        setMessages((prevMessages) => [...prevMessages, data.responseContent]);
+      } else {
+        console.error('API response missing valid responseContent:', data);
+        // Add an error message if the format is wrong
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            role: 'model',
+            parts: [
+              {
+                text: 'Sorry, I received an unexpected response from the server.',
+              },
+            ],
           },
         ]);
       }
+    } catch (error) {
+      console.error('Failed to fetch chat response:', error);
+      // Add a generic network error message
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          role: 'model',
+          parts: [
+            {
+              text: "Sorry, I couldn't connect to the chat service. Please check your connection.",
+            },
+          ],
+        },
+      ]);
+      // --- Optional: Remove optimistic user message on error ---
+      // setMessages(prev => prev.slice(0, -1)); // Uncomment to remove user message if fetch fails
+    } finally {
+      setIsLoading(false); // Turn off loading indicator regardless of success/failure
     }
   };
 
@@ -158,54 +208,77 @@ export function ChatBox() {
           </CardHeader>
 
           <CardContent className='flex-1 p-4 overflow-y-auto space-y-4 bg-card'>
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${
-                  msg.sender === 'me' ? 'justify-end' : 'justify-start'
-                }`}
-              >
-                {/* --- CORRECTION START --- */}
-                {/* Move prose styles and conditional color styles to the container div */}
+            {/* --- Rendering Change: Adapt to GeminiContent --- */}
+            {messages.map(
+              (
+                msg,
+                index // Use index for key if no unique ID is available in GeminiContent
+              ) => (
                 <div
-                  className={`prose prose-sm dark:prose-invert max-w-[80%] rounded-lg px-3 py-2 text-sm break-words ${
-                    msg.sender === 'me'
-                      ? 'bg-primary text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground prose-em:text-primary-foreground prose-a:text-primary-foreground prose-li:text-primary-foreground prose-code:text-primary-foreground prose-blockquote:text-primary-foreground' // Styles for 'me' bubble
-                      : 'bg-muted text-muted-foreground prose-p:text-muted-foreground prose-strong:text-muted-foreground prose-em:text-muted-foreground prose-a:text-muted-foreground prose-li:text-muted-foreground prose-code:text-muted-foreground prose-blockquote:text-muted-foreground' // Styles for 'other' bubble
+                  key={index} // Consider adding unique IDs if needed for more complex state updates
+                  className={`flex ${
+                    msg.role === 'user' ? 'justify-end' : 'justify-start' // Use role
                   }`}
                 >
-                  {/* Remove className from ReactMarkdown */}
-                  <ReactMarkdown
-                    components={{
-                      // Use _node to indicate the variable is intentionally unused
-                      a: ({ ...props }: AnchorProps) => (
-                        <Link
-                          className=' text-xl font-bold underline text-blue-400'
-                          href={
-                            props.href ||
-                            '/product/calvin-klein-slim-fit-stretch-shirt'
-                          }
-                          {...props}
-                          target='_self'
-                          rel='noopener noreferrer'
-                          // You can keep specific styling here or rely on prose-a: styles above
-                          // className="underline hover:text-blue-500"
-                          // Important: prose-a:text-... above will likely override this unless you use !important or more specific selectors
-                        />
-                      ),
-                      p: ({ ...props }: ParagraphProps) => (
-                        // Keep specific paragraph styling if needed
-                        <p {...props} className='mb-2 last:mb-0' />
-                      ),
-                    }}
+                  <div
+                    className={`prose prose-sm dark:prose-invert max-w-[80%] rounded-lg px-3 py-2 text-sm break-words ${
+                      msg.role === 'user'
+                        ? 'bg-primary text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground prose-em:text-primary-foreground prose-a:text-primary-foreground prose-li:text-primary-foreground prose-code:text-primary-foreground prose-blockquote:text-primary-foreground'
+                        : 'bg-muted text-muted-foreground prose-p:text-muted-foreground prose-strong:text-muted-foreground prose-em:text-muted-foreground prose-a:text-muted-foreground prose-li:text-muted-foreground prose-code:text-muted-foreground prose-blockquote:text-muted-foreground'
+                    }`}
                   >
-                    {msg.text}
-                  </ReactMarkdown>
+                    <ReactMarkdown
+                      components={{
+                        // Use _node to indicate the variable is intentionally unused
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                        a: ({ node: _node, ...props }: AnchorProps) => (
+                          <Link
+                            // --- Ensure href is correctly passed ---
+                            href={props.href || '#'} // Provide a default href if none exists
+                            {...props}
+                            target='_blank' // Open product links in new tab typically
+                            rel='noopener noreferrer' // Security best practice for target="_blank"
+                            // Rely on prose-a styles, add specific overrides if needed
+                            className='underline hover:text-blue-500' // Example override
+                          />
+                        ),
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                        p: ({ node: _node, ...props }: ParagraphProps) => (
+                          <p {...props} className='mb-2 last:mb-0' />
+                        ),
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                        img: ({ node: _node, ...props }: ImageProps) => (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            {...props} // Pass down src, alt, etc.
+                            // Apply Tailwind classes for border, padding, rounded corners, background, shadow
+                            className='border border-stone-300 dark:border-stone-600 p-1 rounded bg-white shadow-sm my-1 inline-block'
+                            style={{ maxWidth: '100%' }} // Prevent overflow
+                            // Alt text comes from the markdown ![Product Name](...)
+                          />
+                        ),
+                        // Add rendering for image links generated by the backend
+                        // Ensure your markdown generation format `[![...](...)](...)` is correct
+                        // ReactMarkdown might handle nested markdown (link around image) directly
+                        // Or you might need a custom image component if specific logic is needed
+                      }}
+                    >
+                      {/* Access text from parts array */}
+                      {msg.parts[0].text}
+                    </ReactMarkdown>
+                  </div>
                 </div>
-                {/* --- CORRECTION END --- */}
+              )
+            )}
+            {/* Display loading indicator */}
+            {isLoading && (
+              <div className='flex justify-start'>
+                <div className='prose prose-sm dark:prose-invert max-w-[80%] rounded-lg px-3 py-2 text-sm break-words bg-muted text-muted-foreground animate-pulse'>
+                  ... thinking ...
+                </div>
               </div>
-            ))}
-            <div ref={messagesEndRef} />
+            )}
+            <div ref={messagesEndRef} /> {/* For scrolling */}
           </CardContent>
 
           <CardFooter className='p-3 border-t bg-card-foreground/5'>
@@ -218,11 +291,12 @@ export function ChatBox() {
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
                 aria-label='Chat message input'
+                disabled={isLoading} // Disable input while loading
               />
               <Button
                 size='icon'
                 onClick={handleSendMessage}
-                disabled={!inputValue.trim()}
+                disabled={!inputValue.trim() || isLoading} // Disable button if input empty or loading
                 aria-label='Send message'
               >
                 <SendHorizonalIcon className='h-5 w-5' />

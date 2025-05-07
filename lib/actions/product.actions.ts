@@ -199,19 +199,42 @@ export async function updateProduct(data: z.infer<typeof updateProductSchema>) {
 
 // Get all categories
 export async function getAllCategories() {
-  const categories = await prisma.product.groupBy({
-    by: ['category'],
-    _count: {
-      category: true,
-    },
-    orderBy: {
+  try {
+    const categoriesWithCounts = await prisma.product.groupBy({
+      by: ['category'],
       _count: {
-        category: 'desc', // Optional: order by popularity
+        category: true, // This tells Prisma to count occurrences for the 'category' field within each group
       },
-    },
-  });
-  // Map to simpler structure if needed
-  return categories.map(c => ({ category: c.category }));
+      orderBy: {
+        // Optional: order by popularity (count) or alphabetically
+        _count: {
+          category: 'desc',
+        },
+        // Or order by category name:
+        // category: 'asc',
+      },
+      // Optional: if you want to filter out categories with no name (though usually handled at schema level)
+      // where: {
+      //   NOT: {
+      //     category: null,
+      //   },
+      //   category: {
+      //     not: '', // Exclude empty string categories
+      //   }
+      // }
+    });
+
+    // Map to the structure { category: string, count: number }
+    // The 'c' here will have 'category' and '_count.category'
+    return categoriesWithCounts.map(group => ({
+      category: group.category,
+      count: group._count.category, // Access the count here!
+    }));
+
+  } catch (error) {
+    console.error("Error fetching categories with counts:", error);
+    return []; // Return empty array on error to prevent breaking the UI
+  }
 }
 
 // Get featured products

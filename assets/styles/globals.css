@@ -53,6 +53,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -118,6 +119,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -144,6 +146,69 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+
+  .arctic-mist-theme {
+    /* Or just .arctic-mist if you prefer */
+    --background: 180 86% 97%;
+    /* Our target #f2fefe */
+    --foreground: 200 35% 18%;
+    /* Dark, cool gray-blue for contrast */
+
+    --card: 0 0% 100%;
+    /* Pure white cards for a clean, subtle look */
+    /* Or for slightly more distinct cards: --card: 180 70% 95%; */
+    --card-foreground: 200 35% 18%;
+    /* Same dark text */
+
+    --popover: 0 0% 100%;
+    /* White popovers */
+    --popover-foreground: 200 35% 15%;
+    /* Darker text for popovers */
+
+    --primary: 195 70% 45%;
+    /* A medium, clear blue */
+    --primary-foreground: 0 0% 100%;
+    /* White text on primary */
+
+    --secondary: 190 50% 75%;
+    /* A softer, lighter blue */
+    --secondary-foreground: 200 35% 25%;
+    /* Darker text for secondary */
+
+    --muted: 180 30% 92%;
+    /* Very light, desaturated cyan for muted backgrounds */
+    --muted-foreground: 190 25% 45%;
+    /* Muted text, still dark enough */
+
+    /* Accent could be a warmer color for contrast, or a deeper cool tone */
+    --accent: 210 60% 55%;
+    /* A slightly richer blue */
+    --accent-foreground: 0 0% 100%;
+    /* White text on accent */
+
+    --destructive: 0 75% 55%;
+    /* Standard red for destructive actions */
+    --destructive-foreground: 0 0% 100%;
+    /* White text on destructive */
+
+    --border: 180 30% 88%;
+    /* A light, visible border */
+    --input: 180 40% 94%;
+    /* Very light input background, distinct from main bg */
+    --ring: 195 70% 45%;
+    /* Ring color, same as primary */
+
+    /* Chart colors - cool blues, grays, and maybe a contrasting accent */
+    --chart-1: 190 65% 50%;
+    --chart-2: 200 55% 60%;
+    --chart-3: 210 45% 70%;
+    --chart-4: 180 20% 65%;
+    /* A gray-cyan */
+    --chart-5: 25 70% 60%;
+    /* A contrasting warm color like soft orange */
+
+    /* --radius is likely global */
+  }
 }
 
 @layer base {
@@ -156,6 +221,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

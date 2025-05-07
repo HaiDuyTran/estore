@@ -45,7 +45,7 @@ const ModeToggle = () => {
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
           checked={theme === 'system'}
-          onClick={() => setTheme('system')}
+          onClick={() => setTheme('arctic-mist-theme')}
         >
           System
         </DropdownMenuCheckboxItem>

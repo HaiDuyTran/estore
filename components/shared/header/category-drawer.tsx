@@ -25,16 +25,16 @@ const CategoryDrawer = async () => {
         <DrawerHeader>
           <DrawerTitle>Select a category</DrawerTitle>
           <div className='space-y-1 mt-4'>
-            {categories.map((x) => (
+            {categories.map((catObj) => (
               <Button
                 variant='ghost'
                 className='w-full justify-start'
-                key={x.category}
+                key={catObj.category}
                 asChild
               >
                 <DrawerClose asChild>
-                  <Link href={`/search?category=${x.category}`}>
-                    {x.category} ({x._count})
+                  <Link href={`/search?category=${catObj.category}`}>
+                    {catObj.category} ({catObj.count})
                   </Link>
                 </DrawerClose>
               </Button>

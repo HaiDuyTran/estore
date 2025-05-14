@@ -241,7 +241,7 @@ export async function getAllCategories() {
 export async function getFeaturedProducts() {
   const data = await prisma.product.findMany({
     where: { isFeatured: true ,banner: {not: null}},
-    orderBy: { createdAt: 'asc' },
+    orderBy: { createdAt: 'desc' },
     take: 2,
   });
 

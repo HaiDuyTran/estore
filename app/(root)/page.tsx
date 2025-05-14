@@ -1,8 +1,5 @@
 import ProductList from '@/components/shared/product/product-list';
-import {
-  getLatestProducts,
-  getFeaturedProducts,
-} from '@/lib/actions/product.actions';
+import { getLatestProducts } from '@/lib/actions/product.actions';
 import ProductCarousel from '@/components/shared/product/product-carousel';
 import ViewAllProductsButton from '@/components/view-all-products-button';
 import IconBoxes from '@/components/icon-boxes';
@@ -13,23 +10,23 @@ const Homepage = async () => {
   // const featuredProducts = await getFeaturedProducts();
   const featuredProducts = [
     {
-      id: 'd61c200b-a83e-4d08-b1f5-ff2d42a652d4',
-      name: 'Apple iPhone 15 Pro',
-      slug: 'apple-iphone-15-pro',
-      category: 'Electronics - Smartphones',
+      id: '7f118672-798a-4733-acbf-38b92b3d9f63',
+      name: 'Tommy Hilfiger Classic Fit Dress Shirt',
+      slug: 'tommy-hilfiger-classic-fit-dress-shirt',
+      category: "Men's Dress Shirts",
       images: [
-        'https://cdn2.fptshop.com.vn/unsafe/828x0/filters:format(webp):quality(75)/2023_9_13_638301983422003341_VN_iPhone_15_Pro_Natural_Titanium_PDP_Image_Position-1A_Natural_Titanium_Color.jpg',
-        'https://cdn2.fptshop.com.vn/unsafe/828x0/filters:format(webp):quality(75)/2023_9_13_638301983422003341_VN_iPhone_15_Pro_Natural_Titanium_PDP_Image_Position-1A_Natural_Titanium_Color.jpg',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvE9lv9m0qzfWwFbm97BFAmMoD2OqI2QIbiQ&s',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvE9lv9m0qzfWwFbm97BFAmMoD2OqI2QIbiQ&s',
       ],
-      brand: 'Apple',
-      description: 'The latest powerful iPhone with Pro camera system.',
-      stock: 25,
-      price: '1099',
-      rating: '4.8',
-      numReviews: 155,
-      isFeatured: true,
+      brand: 'Tommy Hilfiger',
+      description: 'A perfect blend of sophistication and comfort. Non-Iron.',
+      stock: 0,
+      price: '99.95',
+      rating: '4.9',
+      numReviews: 3,
+      isFeatured: false,
       banner: '/images/banner-2.jpg',
-      createdAt: new Date('2025-04-28T01:41:34.705Z'), // Convert string to Date object
+      createdAt: new Date('2025-04-28T01:41:34.705Z'),
       embedding: {},
     },
     {

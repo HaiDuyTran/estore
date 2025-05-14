@@ -22,7 +22,7 @@ const ProductDetailsPage = async (props: {
   const userId = session?.user?.id;
 
   const cart = await getMyCart();
-
+  console.log(product, 'product');
   return (
     <>
       <section>
